@@ -3,3 +3,13 @@
     margin: 0;
     padding: 0;
 }
+
+#start-screen, #game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game-screen {
+    visibility: hidden;
+}
