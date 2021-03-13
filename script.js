@@ -1,15 +1,14 @@
 // A Module that modifies the display.
-const displayController = (() => {
+const DisplayController = (() => {
     // Creates a div for each cell in the grid
     const createGridDivs = function () {
         let grid = document.querySelector('#grid')
 
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                div = document.createElement('div')
+                let div = document.createElement('div')
                 div.dataset.row = i
                 div.dataset.col = j
-                div.style.borderStyle = 'solid'
                 div.addEventListener('click', updateGridCell)
                 grid.appendChild(div);
             }
@@ -32,6 +31,8 @@ const displayController = (() => {
     return {createGridDivs, updateGridCell, prompt}
 })()
 
+DisplayController.createGridDivs()
+
 // A Module that represents the game logic
 const play = (() => {
     // Create the players.
@@ -41,11 +42,11 @@ const play = (() => {
     const players = [player1, player2]
     let selectedPlayer = players[Math.floor(Math.random() * players.length)]
     // Make display controller prompt the selected player to make a move.
-    displayController.prompt(selectedPlayer) 
+    DisplayController.prompt(selectedPlayer) 
 })()
 
 // A Module representing the game board. The game board is a 3x3 grid
-const gameBoard = (() => {
+const GameBoard = (() => {
     const gameBoard = [[],[],[]]
     const getBoard = function () {
         return gameBoard
@@ -65,12 +66,12 @@ const Player = (name, type, symbol) => {
         return symbol
     }
     const makeMove = function (i, j) {
-        if (gameBoard.getBoard()[i][j] === undefined) {
-            gameBoard.getBoard()[i][j] = symbol
+        if (GameBoard.getBoard()[i][j] === undefined) {
+            GameBoard.getBoard()[i][j] = symbol
         }
-        displayController.updateGridCell(i, j, symbol) 
+        DisplayController.updateGridCell(i, j, symbol) 
     }
 
 }
 
-displayController.createGridDivs()
+DisplayController.createGridDivs()

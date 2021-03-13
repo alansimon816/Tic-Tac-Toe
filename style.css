@@ -12,6 +12,12 @@
     align-items: center;
 }
 
+.flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 body {
     width: 100vw;
     height: 100vh;
@@ -19,11 +25,12 @@ body {
 
 #start-screen {
     position: absolute;
-    visibility: hidden;
+    /* visibility: hidden; */
 }
+
 #game-screen {
     position: absolute;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 
 #grid {
@@ -50,4 +57,6 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    border-style:solid;
+    border-color: black;
 }
