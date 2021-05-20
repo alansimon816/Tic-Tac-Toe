@@ -30,7 +30,7 @@ const DisplayController = (() => {
 
     let _startBtn = document.querySelector('#start-btn')
     _startBtn.addEventListener('click', (e) => {
-        // e.preventDefault();
+        e.preventDefault();
         document.querySelector('#start-screen').style.visibility = 'hidden'
         document.querySelector('#game-screen').style.visibility = 'visible'
         play.prompt(play.randomlySelectedPlayer)
