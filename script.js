@@ -86,5 +86,3 @@ const GameBoard = (() => {
     }
     return {getBoard}
 })()
-
-DisplayController.createGridDivs()
