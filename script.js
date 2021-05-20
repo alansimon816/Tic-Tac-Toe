@@ -28,31 +28,18 @@ const DisplayController = (() => {
         p.innerHTML = `${player.getName()}'s turn.`
     }
 
+    let _startBtn = document.querySelector('#start-btn')
+    _startBtn.addEventListener('click', (e) => {
+        // e.preventDefault();
+        document.querySelector('#start-screen').style.visibility = 'hidden'
+        document.querySelector('#game-screen').style.visibility = 'visible'
+        play.prompt(play.randomlySelectedPlayer)
+    })
+
     return {createGridDivs, updateGridCell, prompt}
 })()
 
 DisplayController.createGridDivs()
-
-// A Module that represents the game logic
-const play = (() => {
-    // Create the players.
-    const player1 = Player(name, type, symbol)
-    const player2 = Player(name, type, symbol)
-    // Randomly select one of the players to go first.
-    const players = [player1, player2]
-    let selectedPlayer = players[Math.floor(Math.random() * players.length)]
-    // Make display controller prompt the selected player to make a move.
-    DisplayController.prompt(selectedPlayer) 
-})()
-
-// A Module representing the game board. The game board is a 3x3 grid
-const GameBoard = (() => {
-    const gameBoard = [[],[],[]]
-    const getBoard = function () {
-        return gameBoard
-    }
-    return {getBoard}
-})()
 
 // A factory function for creating players.
 const Player = (name, type, symbol) => {
@@ -72,6 +59,32 @@ const Player = (name, type, symbol) => {
         DisplayController.updateGridCell(i, j, symbol) 
     }
 
+    return {getName, getType, getSymbol, makeMove}
 }
+
+// A Module that represents the game logic
+const play = (() => {
+    // Create the players.
+    const player1 = Player(document.querySelector('#name1').value, 'human', 'X')
+    const player2 = Player(document.querySelector('#name2').value, 'human', 'O')
+    // Randomly select one of the players to go first.
+    const players = [player1, player2]
+    let randomlySelectedPlayer = players[Math.floor(Math.random() * players.length)]
+    // Make display controller prompt the selected player to make a move.
+    const prompt = (selectedPlayer) => {
+        DisplayController.prompt(selectedPlayer) 
+    }
+
+    return {player1, player2, randomlySelectedPlayer, prompt}
+})()
+
+// A Module representing the game board. The game board is a 3x3 grid
+const GameBoard = (() => {
+    const gameBoard = [[],[],[]]
+    const getBoard = function () {
+        return gameBoard
+    }
+    return {getBoard}
+})()
 
 DisplayController.createGridDivs()
