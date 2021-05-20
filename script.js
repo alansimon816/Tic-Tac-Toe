@@ -43,15 +43,9 @@ DisplayController.createGridDivs()
 
 // A factory function for creating players.
 const Player = (name, type, symbol) => {
-    const getName = function () {
-        return name
-    }
-    const getType = function () {
-        return type
-    }
-    const getSymbol = function () {
-        return symbol
-    }
+    const getName = () => name
+    const getType = () => type
+    const getSymbol = () => symbol
     const makeMove = function (i, j) {
         if (GameBoard.getBoard()[i][j] === undefined) {
             GameBoard.getBoard()[i][j] = symbol
