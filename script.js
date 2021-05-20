@@ -109,6 +109,19 @@ const gameController = (() => {
     }
 
     const win = () => diagonal() || horizontal() || vertical()
+    
+    const isFull = () => {
+        let gameBoard = GameBoard.getBoard()
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 2; j++) {
+                if (gameBoard[i][j] == '') 
+                    return false
+            }
+        }
+        return true
+    }
+    
+    const draw = () => gameBoard.isFull() && !win()
 
     const play = () => {
         // Create the players.
