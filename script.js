@@ -66,6 +66,50 @@ const gameController = (() => {
         DisplayController.prompt(selectedPlayer) 
     }
 
+    const diagonal = () => {
+        let board = GameBoard.getBoard()
+        if ((board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') ||
+            (board[2][0] == 'X' && board[1][1] == 'X' && board[0][2] == 'X') ||
+            (board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') ||
+            (board[2][0] == 'O' && board[1][1] == 'O' && board[0][2] == 'O')) {
+                return true
+        }
+        return false
+    }
+
+    const allEqual = arr => arr.every(v => v === arr[0])
+
+    const horizontal = () => {
+        let board = GameBoard.getBoard()
+
+        for (let i = 0; i < 2; i++) {
+            if (allEqual(board[i]) && board[i][0] != '') {
+                return true
+            }
+        }  
+
+        return false
+    }
+
+    const vertical = () => {
+        let board = GameBoard.getBoard()
+        let col
+        for (let j = 0; j < 2; j++) {
+            col = []
+
+            for (let i = 0; i < 2; i++) {
+                col.push(board[i][j])
+            }
+
+            if (allEqual(col) && col[0] != '') {
+                return true
+            }
+        }
+        return false
+    }
+
+    const win = () => diagonal() || horizontal() || vertical()
+
     const play = () => {
         // Create the players.
         player1 = Player((document.querySelector('#name1').value), 'human', 'X')
@@ -74,6 +118,9 @@ const gameController = (() => {
         players = [player1, player2]
         let randomPlayer = players[Math.floor(Math.random() * players.length)]
         prompt(randomPlayer)
+        while (!win() && !draw()) {
+
+        }
     }
     return {player1, player2, prompt, play}
 })()
