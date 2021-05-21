@@ -54,16 +54,23 @@ const DisplayController = (() => {
             }
         }
     }
-    // Removes prompt and either win or draw text from gameScreen.
+    // Removes prompt and either the win or draw text from gameScreen.
     const removeText = () => {
         let gameScreen = document.querySelector('#game-screen') 
         gameScreen.removeChild(gameScreen.childNodes[5])
+    }
+
+    const removePlayAgainButton = () => {
+        let gameScreen = document.querySelector('#game-screen')
+        let btn = document.querySelector('#game-screen > button')
+        gameScreen.removeChild(btn)
     }
 
     const playAgain = () => {
         GameBoard.clear()
         clearGrid()
         removeText()
+        removePlayAgainButton()
         addGridEventListeners()
         gameController.play()
     }
