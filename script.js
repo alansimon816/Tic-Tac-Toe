@@ -9,18 +9,35 @@ const DisplayController = (() => {
                 let div = document.createElement('div')
                 div.dataset.row = i
                 div.dataset.col = j
-                div.addEventListener('click', updateGridCell)
+                div.addEventListener('click', updateGameState)
                 grid.appendChild(div);
             }
         }
     }
     // Updates grid cell with its respective element from gameBoard array
-    const updateGridCell = function (i, j, symbol) {
-        let cell = document.querySelector(`div[data-row="${i}"][data-col="${j}"]`)
-        console.log(cell.dataset.row)
-        let p = document.createElement('p')
-        p.innerHTML = symbol
-        cell.appendChild(p) 
+    const updateGameState = function (e) {
+        let div = e.target
+        let row = div.dataset.row
+        let col = div.dataset.col
+        console.log(div.dataset.row)
+        if (!div.hasChildNodes()) {
+            console.log(3)
+            gameController.getCurrentPlayer().makeMove(row, col, 
+            gameController.getCurrentPlayer().getSymbol())
+            let p = document.createElement('p')
+            p.innerHTML = gameController.getCurrentPlayer().getSymbol()
+            div.appendChild(p)
+            if (gameController.win()) {
+                console.log('win')
+            }
+            else if (gameController.draw()) {
+                console.log('draw')
+            }
+            else {
+                gameController.changeTurn()
+                gameController.prompt(gameController.getCurrentPlayer())
+            }
+        }
     }
     // Displays a prompt for the player whose turn it is.
     const prompt = function (player) {
@@ -33,10 +50,11 @@ const DisplayController = (() => {
         e.preventDefault();
         document.querySelector('#start-screen').style.visibility = 'hidden'
         document.querySelector('#game-screen').style.visibility = 'visible'
+        console.log(1)
         gameController.play()
     })
 
-    return {createGridDivs, updateGridCell, prompt}
+    return {createGridDivs, updateGameState, prompt}
 })()
 
 DisplayController.createGridDivs()
@@ -46,12 +64,8 @@ const Player = (name, type, symbol) => {
     const getName = () => name
     const getType = () => type
     const getSymbol = () => symbol
-    const makeMove = function (i, j) {
-        if (GameBoard.getBoard()[i][j] === undefined) {
-            GameBoard.getBoard()[i][j] = symbol
-        }
-        DisplayController.updateGridCell(i, j, symbol) 
-    }
+
+    const makeMove = (row, col, symbol) => GameBoard.getBoard()[row][col] = symbol
 
     return {getName, getType, getSymbol, makeMove}
 }
@@ -60,18 +74,122 @@ const Player = (name, type, symbol) => {
 const gameController = (() => {
     let player1
     let player2
-    let players
+    let currentPlayer
 
-    const prompt = (selectedPlayer) => {
-        DisplayController.prompt(selectedPlayer) 
+    const prompt = selectedPlayer => {
+        console.log('gameController.prompt() entered')
+        DisplayController.prompt(selectedPlayer)
+    }
+
+    // const diagonal = () => {
+    //     let board = GameBoard.getBoard()
+    //     if ((board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') ||
+    //         (board[2][0] == 'X' && board[1][1] == 'X' && board[0][2] == 'X') ||
+    //         (board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') ||
+    //         (board[2][0] == 'O' && board[1][1] == 'O' && board[0][2] == 'O')) {
+    //             return true
+    //     }
+    //     return false
+    // }
+
+    // const allEqual = arr => arr.every(v => v === arr[0])
+
+    // const horizontal = () => {
+    //     let board = GameBoard.getBoard()
+
+    //     for (let i = 0; i < 3; i++) {
+    //         if (allEqual(board[i]) && board[i][0] != undefined) {
+    //             return true
+    //         }
+    //     }  
+
+    //     return false
+    // }
+
+    // const vertical = () => {
+    //     let board = GameBoard.getBoard()
+    //     let col
+    //     for (let j = 0; j < 3; j++) {
+    //         col = []
+
+    //         for (let i = 0; i < 3; i++) {
+    //             col.push(board[i][j])
+    //         }
+
+    //         if (allEqual(col) && col[0] != undefined) {
+    //             return true
+    //         }
+    //     }
+    //     return false
+    // }
+
+    const win = () => {GameBoard.diagonal() || GameBoard.horizontal() || 
+        GameBoard.vertical()}
+    
+    // const isFull = () => {
+    //     let gameBoard = GameBoard.getBoard()
+    //     for (let i = 0; i < 3; i++) {
+    //         for (let j = 0; j < 3; j++) {
+    //             if (gameBoard[i][j] == undefined) 
+    //                 return false
+    //         }
+    //     }
+    //     return true
+    // }
+    
+    const draw = () => GameBoard.isFull() && !win()
+
+    const play = () => {
+        // Create the players.
+        this.player1 = Player((document.querySelector('#name1').value), 'human', 'X')
+        this.player2 = Player((document.querySelector('#name2').value), 'human', 'O')
+        // Randomly select one of the players to go first.
+        let players = [this.player1, this.player2]
+        this.currentPlayer = players[Math.floor(Math.random() * players.length)]
+        prompt(this.currentPlayer)
+        console.log(2)
+    }
+
+    const changeTurn = () => {
+        if (this.currentPlayer == this.player1)
+            this.currentPlayer = this.player2
+        else
+            this.currentPlayer = this.player1
+    }
+    const getCurrentPlayer = () => this.currentPlayer
+    console.log(4)
+    return {player1,
+            player2, 
+            currentPlayer,
+            changeTurn, 
+            win, 
+            draw, 
+            getCurrentPlayer, 
+            play,
+            prompt}
+})()
+
+// A Module representing the game board. The game board is a 3x3 grid
+const GameBoard = (() => {
+    const gameBoard = [[],[],[]]
+    const getBoard = function () {
+        return gameBoard
+    }
+    const isFull = () => {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (gameBoard[i][j] == undefined) 
+                    return false
+            }
+        }
+        return true
     }
 
     const diagonal = () => {
-        let board = GameBoard.getBoard()
-        if ((board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') ||
-            (board[2][0] == 'X' && board[1][1] == 'X' && board[0][2] == 'X') ||
-            (board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') ||
-            (board[2][0] == 'O' && board[1][1] == 'O' && board[0][2] == 'O')) {
+        if ((gameBoard[0][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[2][2] == 'X') ||
+            (gameBoard[2][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[0][2] == 'X') ||
+            (gameBoard[0][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[2][2] == 'O') ||
+            (gameBoard[2][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[0][2] == 'O')) {
                 return true
         }
         return false
@@ -82,8 +200,8 @@ const gameController = (() => {
     const horizontal = () => {
         let board = GameBoard.getBoard()
 
-        for (let i = 0; i < 2; i++) {
-            if (allEqual(board[i]) && board[i][0] != '') {
+        for (let i = 0; i < 3; i++) {
+            if (allEqual(gameBoard[i]) && gameBoard[i][0] != undefined) {
                 return true
             }
         }  
@@ -94,55 +212,18 @@ const gameController = (() => {
     const vertical = () => {
         let board = GameBoard.getBoard()
         let col
-        for (let j = 0; j < 2; j++) {
+        for (let j = 0; j < 3; j++) {
             col = []
 
-            for (let i = 0; i < 2; i++) {
-                col.push(board[i][j])
+            for (let i = 0; i < 3; i++) {
+                col.push(gameBoard[i][j])
             }
 
-            if (allEqual(col) && col[0] != '') {
+            if (allEqual(col) && col[0] != undefined) {
                 return true
             }
         }
         return false
     }
-
-    const win = () => diagonal() || horizontal() || vertical()
-    
-    const isFull = () => {
-        let gameBoard = GameBoard.getBoard()
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < 2; j++) {
-                if (gameBoard[i][j] == '') 
-                    return false
-            }
-        }
-        return true
-    }
-    
-    const draw = () => gameBoard.isFull() && !win()
-
-    const play = () => {
-        // Create the players.
-        player1 = Player((document.querySelector('#name1').value), 'human', 'X')
-        player2 = Player((document.querySelector('#name2').value), 'human', 'O')
-        // Randomly select one of the players to go first.
-        players = [player1, player2]
-        let randomPlayer = players[Math.floor(Math.random() * players.length)]
-        prompt(randomPlayer)
-        while (!win() && !draw()) {
-
-        }
-    }
-    return {player1, player2, prompt, play}
-})()
-
-// A Module representing the game board. The game board is a 3x3 grid
-const GameBoard = (() => {
-    const gameBoard = [[],[],[]]
-    const getBoard = function () {
-        return gameBoard
-    }
-    return {getBoard}
+    return {getBoard, isFull, diagonal, horizontal, vertical}
 })()
