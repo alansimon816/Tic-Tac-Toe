@@ -15,6 +15,17 @@ const DisplayController = (() => {
         }
     }
 
+    const addGridEventListeners = () => {
+        let grid = document.querySelector('#grid')
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                document.querySelector(
+                `#grid > div[data-row='${i}'][data-col='${j}']`)
+                .addEventListener('click', updateGameState)
+            }
+        }
+    }
+
     // Removes event listeners from each grid div
     const removeGridEventListeners = function () {
         let grid = document.querySelector('#grid')
@@ -53,6 +64,7 @@ const DisplayController = (() => {
         GameBoard.clear()
         clearGrid()
         removeText()
+        addGridEventListeners()
         gameController.play()
     }
 
