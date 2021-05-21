@@ -121,9 +121,9 @@ const gameController = (() => {
     //         }
     //     }
     //     return false
-    // }
+    // }z
 
-    const win = () => {GameBoard.diagonal() || GameBoard.horizontal() || 
+    const win = () => {return GameBoard.diagonal() || GameBoard.horizontal() || 
         GameBoard.vertical()}
     
     // const isFull = () => {
@@ -190,22 +190,29 @@ const GameBoard = (() => {
             (gameBoard[2][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[0][2] == 'X') ||
             (gameBoard[0][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[2][2] == 'O') ||
             (gameBoard[2][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[0][2] == 'O')) {
+                console.log('diagonal is true')
                 return true
         }
+        console.log('diagonal is false')
         return false
     }
 
     const allEqual = arr => arr.every(v => v === arr[0])
 
+    const filled = arr => arr.every(v => v != undefined)
+
     const horizontal = () => {
         let board = GameBoard.getBoard()
 
         for (let i = 0; i < 3; i++) {
-            if (allEqual(gameBoard[i]) && gameBoard[i][0] != undefined) {
+            if (filled(gameBoard[i]) &&
+                gameBoard[i].length == 3 &&
+                allEqual(gameBoard[i]) && gameBoard[i][0] != undefined) {
+                console.log('horizontal is true')
                 return true
             }
         }  
-
+        console.log('horizontal is false')
         return false
     }
 
@@ -220,10 +227,12 @@ const GameBoard = (() => {
             }
 
             if (allEqual(col) && col[0] != undefined) {
+                console.log('vertical is true')
                 return true
             }
         }
+        console.log('vertical is false')
         return false
     }
-    return {getBoard, isFull, diagonal, horizontal, vertical}
+    return {getBoard, isFull, diagonal, horizontal, vertical, allEqual, filled}
 })()
