@@ -45,9 +45,8 @@ const DisplayController = (() => {
     }
     // Removes prompt and either win or draw text from gameScreen.
     const removeText = () => {
-        let gameScreen = document.querySelector('#game-screen')
-        gameScreen.removeChild(gameScreen.childNodes[1])
-        gameScreen.removeChild(gameScreen.childNodes[2])
+        let gameScreen = document.querySelector('#game-screen') 
+        gameScreen.removeChild(gameScreen.childNodes[5])
     }
 
     const playAgain = () => {
