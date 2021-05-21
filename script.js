@@ -26,6 +26,37 @@ const DisplayController = (() => {
             }
         }
     }
+
+    const displayPlayAgainButton = () => {
+        let btn = document.createElement('button')
+        btn.innerHTML = "Play Again"
+        btn.addEventListener('click', playAgain)
+        document.querySelector("#game-screen").appendChild(btn)
+    }
+    // Clears the grid that is displayed.
+    const clearGrid = () => {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let div = document.querySelector(
+                    `#grid > div[data-row='${i}'][data-col='${j}']`)
+                div.innerHTML = ''
+            }
+        }
+    }
+    // Removes prompt and either win or draw text from gameScreen.
+    const removeText = () => {
+        let gameScreen = document.querySelector('#game-screen')
+        gameScreen.removeChild(gameScreen.childNodes[1])
+        gameScreen.removeChild(gameScreen.childNodes[2])
+    }
+
+    const playAgain = () => {
+        GameBoard.clear()
+        clearGrid()
+        removeText()
+        gameController.play()
+    }
+
     // Updates grid cell with its respective element from gameBoard array
     const updateGameState = function (e) {
         let div = e.target
@@ -49,6 +80,8 @@ const DisplayController = (() => {
                 let grid = document.querySelector('#grid-overlay')
                 gameScreen.insertBefore(p, grid)
                 console.log('win')
+                // Play again
+                displayPlayAgainButton()
             }
             else if (gameController.draw()) {
                 // lock the grid 
@@ -60,6 +93,8 @@ const DisplayController = (() => {
                 let grid = document.querySelector('#grid-overlay')
                 gameScreen.insertBefore(p, grid)
                 console.log('draw')
+                // Play again
+                displayPlayAgainButton()
             }
             else {
                 gameController.changeTurn()
@@ -179,12 +214,10 @@ const GameBoard = (() => {
     const filled = arr => arr.every(v => v != undefined)
 
     const horizontal = () => {
-        let board = GameBoard.getBoard()
-
         for (let i = 0; i < 3; i++) {
-            if (filled(gameBoard[i]) &&
-                gameBoard[i].length == 3 &&
-                allEqual(gameBoard[i]) && gameBoard[i][0] != undefined) {
+            if (gameBoard[i][0] == gameBoard[i][1] &&
+                gameBoard[i][1] == gameBoard[i][2] &&
+                gameBoard[i][0] != undefined) {
                 console.log('horizontal is true')
                 return true
             }
@@ -194,7 +227,6 @@ const GameBoard = (() => {
     }
 
     const vertical = () => {
-        let board = GameBoard.getBoard()
         let col
         for (let j = 0; j < 3; j++) {
             col = []
@@ -211,5 +243,18 @@ const GameBoard = (() => {
         console.log('vertical is false')
         return false
     }
-    return {getBoard, isFull, diagonal, horizontal, vertical, allEqual, filled}
+
+    const clear = () => {
+        for (let i = 0; i < 3; i++) {
+            gameBoard[i] = []
+        }
+    }
+    return {getBoard,
+            isFull,
+            diagonal,
+            horizontal,
+            vertical,
+            allEqual,
+            filled,
+            clear}
 })()
