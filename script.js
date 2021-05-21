@@ -39,6 +39,11 @@ const DisplayController = (() => {
                 console.log('win')
             }
             else if (gameController.draw()) {
+                let gameScreen = document.querySelector('#game-screen')
+                let p = document.createElement('p')
+                p.innerHTML = "This match is a draw!"
+                let grid = document.querySelector('#grid-overlay')
+                gameScreen.insertBefore(p, grid)
                 console.log('draw')
             }
             else {
