@@ -14,6 +14,18 @@ const DisplayController = (() => {
             }
         }
     }
+
+    // Removes event listeners from each grid div
+    const removeGridEventListeners = function () {
+        let grid = document.querySelector('#grid')
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let div = document.querySelector(
+                    `#grid > div[data-row='${i}'][data-col='${j}']`)
+                div.removeEventListener('click', updateGameState)
+            }
+        }
+    }
     // Updates grid cell with its respective element from gameBoard array
     const updateGameState = function (e) {
         let div = e.target
@@ -29,7 +41,7 @@ const DisplayController = (() => {
 
             if (gameController.win()) {
                 // lock the grid 
-                
+                removeGridEventListeners()
                 // display the winner
                 let gameScreen = document.querySelector('#game-screen')
                 let p = document.createElement('p')
@@ -39,6 +51,9 @@ const DisplayController = (() => {
                 console.log('win')
             }
             else if (gameController.draw()) {
+                // lock the grid 
+                removeGridEventListeners()
+                // display text stating draw
                 let gameScreen = document.querySelector('#game-screen')
                 let p = document.createElement('p')
                 p.innerHTML = "This match is a draw!"
