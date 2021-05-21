@@ -57,6 +57,24 @@ const DisplayController = (() => {
         gameController.play()
     }
 
+    const displayWin = () => {
+        let gameScreen = document.querySelector('#game-screen')
+        let p = document.createElement('p')
+        p.innerHTML = `${gameController.getCurrentPlayer().getName()} wins!`
+        let grid = document.querySelector('#grid-overlay')
+        gameScreen.insertBefore(p, grid)
+        console.log('win')
+    }
+
+    const displayDraw = () => {
+        let gameScreen = document.querySelector('#game-screen')
+        let p = document.createElement('p')
+        p.innerHTML = "This match is a draw!"
+        let grid = document.querySelector('#grid-overlay')
+        gameScreen.insertBefore(p, grid)
+        console.log('draw')
+    }
+
     // Updates grid cell with its respective element from gameBoard array
     const updateGameState = function (e) {
         let div = e.target
@@ -71,29 +89,13 @@ const DisplayController = (() => {
             div.appendChild(p)
 
             if (gameController.win()) {
-                // lock the grid 
                 removeGridEventListeners()
-                // display the winner
-                let gameScreen = document.querySelector('#game-screen')
-                let p = document.createElement('p')
-                p.innerHTML = `${gameController.getCurrentPlayer().getName()} wins!`
-                let grid = document.querySelector('#grid-overlay')
-                gameScreen.insertBefore(p, grid)
-                console.log('win')
-                // Play again
+                displayWin()
                 displayPlayAgainButton()
             }
             else if (gameController.draw()) {
-                // lock the grid 
                 removeGridEventListeners()
-                // display text stating draw
-                let gameScreen = document.querySelector('#game-screen')
-                let p = document.createElement('p')
-                p.innerHTML = "This match is a draw!"
-                let grid = document.querySelector('#grid-overlay')
-                gameScreen.insertBefore(p, grid)
-                console.log('draw')
-                // Play again
+                displayDraw()
                 displayPlayAgainButton()
             }
             else {
@@ -145,11 +147,6 @@ const gameController = (() => {
     const win = () => {return (GameBoard.diagonal() || GameBoard.horizontal() || 
         GameBoard.vertical())}
 
-    const winner = () => {
-        if (GameBoard.diagonal()) {
-        }
-    }
-    
     const draw = () => GameBoard.isFull() && !win()
 
     const play = () => {
