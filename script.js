@@ -19,15 +19,23 @@ const DisplayController = (() => {
         let div = e.target
         let row = div.dataset.row
         let col = div.dataset.col
-        console.log(div.dataset.row)
+        
         if (!div.hasChildNodes()) {
-            console.log(3)
             gameController.getCurrentPlayer().makeMove(row, col, 
             gameController.getCurrentPlayer().getSymbol())
             let p = document.createElement('p')
             p.innerHTML = gameController.getCurrentPlayer().getSymbol()
             div.appendChild(p)
+
             if (gameController.win()) {
+                // lock the grid 
+                
+                // display the winner
+                let gameScreen = document.querySelector('#game-screen')
+                let p = document.createElement('p')
+                p.innerHTML = `${gameController.getCurrentPlayer().getName()} wins!`
+                let grid = document.querySelector('#grid-overlay')
+                gameScreen.insertBefore(p, grid)
                 console.log('win')
             }
             else if (gameController.draw()) {
@@ -50,7 +58,6 @@ const DisplayController = (() => {
         e.preventDefault();
         document.querySelector('#start-screen').style.visibility = 'hidden'
         document.querySelector('#game-screen').style.visibility = 'visible'
-        console.log(1)
         gameController.play()
     })
 
@@ -77,77 +84,26 @@ const gameController = (() => {
     let currentPlayer
 
     const prompt = selectedPlayer => {
-        console.log('gameController.prompt() entered')
         DisplayController.prompt(selectedPlayer)
     }
 
-    // const diagonal = () => {
-    //     let board = GameBoard.getBoard()
-    //     if ((board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') ||
-    //         (board[2][0] == 'X' && board[1][1] == 'X' && board[0][2] == 'X') ||
-    //         (board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') ||
-    //         (board[2][0] == 'O' && board[1][1] == 'O' && board[0][2] == 'O')) {
-    //             return true
-    //     }
-    //     return false
-    // }
+    const win = () => {return (GameBoard.diagonal() || GameBoard.horizontal() || 
+        GameBoard.vertical())}
 
-    // const allEqual = arr => arr.every(v => v === arr[0])
-
-    // const horizontal = () => {
-    //     let board = GameBoard.getBoard()
-
-    //     for (let i = 0; i < 3; i++) {
-    //         if (allEqual(board[i]) && board[i][0] != undefined) {
-    //             return true
-    //         }
-    //     }  
-
-    //     return false
-    // }
-
-    // const vertical = () => {
-    //     let board = GameBoard.getBoard()
-    //     let col
-    //     for (let j = 0; j < 3; j++) {
-    //         col = []
-
-    //         for (let i = 0; i < 3; i++) {
-    //             col.push(board[i][j])
-    //         }
-
-    //         if (allEqual(col) && col[0] != undefined) {
-    //             return true
-    //         }
-    //     }
-    //     return false
-    // }z
-
-    const win = () => {return GameBoard.diagonal() || GameBoard.horizontal() || 
-        GameBoard.vertical()}
-    
-    // const isFull = () => {
-    //     let gameBoard = GameBoard.getBoard()
-    //     for (let i = 0; i < 3; i++) {
-    //         for (let j = 0; j < 3; j++) {
-    //             if (gameBoard[i][j] == undefined) 
-    //                 return false
-    //         }
-    //     }
-    //     return true
-    // }
+    const winner = () => {
+        if (GameBoard.diagonal()) {
+        }
+    }
     
     const draw = () => GameBoard.isFull() && !win()
 
     const play = () => {
-        // Create the players.
         this.player1 = Player((document.querySelector('#name1').value), 'human', 'X')
         this.player2 = Player((document.querySelector('#name2').value), 'human', 'O')
-        // Randomly select one of the players to go first.
         let players = [this.player1, this.player2]
+        // Randomly select one of the players to go first.
         this.currentPlayer = players[Math.floor(Math.random() * players.length)]
         prompt(this.currentPlayer)
-        console.log(2)
     }
 
     const changeTurn = () => {
@@ -156,8 +112,9 @@ const gameController = (() => {
         else
             this.currentPlayer = this.player1
     }
+
     const getCurrentPlayer = () => this.currentPlayer
-    console.log(4)
+
     return {player1,
             player2, 
             currentPlayer,
