@@ -75,7 +75,8 @@ const DisplayController = (() => {
         gameController.play()
     }
 
-    const displayWin = () => {
+    // Displays win message.
+    const displayWinMsg = () => {
         let gameScreen = document.querySelector('#game-screen')
         let p = document.createElement('p')
         p.innerHTML = `${gameController.getCurrentPlayer().getName()} wins!`
@@ -84,10 +85,11 @@ const DisplayController = (() => {
         console.log('win')
     }
 
-    const displayDraw = () => {
+    // Displays draw message.
+    const displayDrawMsg = () => {
         let gameScreen = document.querySelector('#game-screen')
         let p = document.createElement('p')
-        p.innerHTML = "This match is a draw!"
+        p.innerHTML = "Draw!"
         let grid = document.querySelector('#grid-overlay')
         gameScreen.insertBefore(p, grid)
         console.log('draw')
@@ -108,12 +110,12 @@ const DisplayController = (() => {
 
             if (gameController.win()) {
                 removeGridEventListeners()
-                displayWin()
+                displayWinMsg()
                 displayPlayAgainButton()
             }
             else if (gameController.draw()) {
                 removeGridEventListeners()
-                displayDraw()
+                displayDrawMsg()
                 displayPlayAgainButton()
             }
             else {
@@ -128,12 +130,28 @@ const DisplayController = (() => {
         p.innerHTML = `${player.getName()}'s turn.`
     }
 
+    // A form validation function to ensure that both fields are filled.
+    const fieldsAreFilled = () => {
+        let field1 = document.querySelector('#name1')
+        let field2 = document.querySelector('#name2')
+        return field1.value != '' && field2.value != ''
+    }
+
+    // A form validation function to ensure that fields are not equal.
+    const fieldsAreDistinct = () => {
+        let field1 = document.querySelector('#name1')
+        let field2 = document.querySelector('#name2')
+        return field1.value != field2.value
+    }
+
     let _startBtn = document.querySelector('#start-btn')
     _startBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        document.querySelector('#start-screen').style.visibility = 'hidden'
-        document.querySelector('#game-screen').style.visibility = 'visible'
-        gameController.play()
+        if (fieldsAreFilled() && fieldsAreDistinct()) {
+            document.querySelector('#start-screen').style.visibility = 'hidden'
+            document.querySelector('#game-screen').style.visibility = 'visible'
+            gameController.play()
+        } 
     })
 
     return {createGridDivs, updateGameState, prompt}
@@ -202,6 +220,8 @@ const GameBoard = (() => {
     const getBoard = function () {
         return gameBoard
     }
+
+    // Checks if all positions in the board are filled with a symbol.
     const isFull = () => {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -212,6 +232,7 @@ const GameBoard = (() => {
         return true
     }
 
+    // Checks if a homogenous diagonal is present in the board.
     const diagonal = () => {
         if ((gameBoard[0][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[2][2] == 'X') ||
             (gameBoard[2][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[0][2] == 'X') ||
