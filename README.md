@@ -1,12 +1,10 @@
-# Tic-Tac-Toe
+# [Tic-Tac-Toe](https://alansimon816.github.io/Tic-Tac-Toe/)
+![demo](Animation.gif)
+
 ## Description
 This is a web application built with the intention of replicating the classic
 game of tic-tac-toe. This game is for two players who would play on the same
 computer against each other.
-
-## Demo
-Access the app [here](https://alansimon816.github.io/Tic-Tac-Toe/).
-![demo](Animation.gif)
 
 ## What I learned
 This project served as an introduction to
